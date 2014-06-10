@@ -14,7 +14,7 @@
 	{
 		die("passworderr");
 	}
-	$q=mysqli_query($con,"select * from user where email = '".$_POST['email']."'");
+	$q=mysqli_query($con,"select * from users where email = '".$_POST['email']."'");
 	if(mysqli_num_rows($q)>0){
 		die('emailerr');
 	}

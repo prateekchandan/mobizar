@@ -4,6 +4,7 @@
 	{
 		header('location:home.php');
 	}
+	
 ?>
 <?php
 include "header.php";
@@ -79,6 +80,7 @@ include "header.php";
 						  <button type="submit" class="btn btn-theme">Register</button>
 						  <button type="button" class="btn btn-theme" onclick="show('login-box')">Login</button>
 						</form>
+											
 					</div>
 			</div><!--/col-lg-8 REGISTER -->
 
