@@ -10,17 +10,38 @@
     if($user['usertype']!='Instructor'){
     	die("error");
     }
+
+    $q=mysqli_query($con,'select * from `group` where createdby="'.$user['userid'].'"');
+    $allgroup=array();
+    while($row=mysqli_fetch_assoc($q)){
+    	$allgroup[$row['groupid']]=$row;
+    }
     
 ?>
 <?php
 include "header.php";
 ?>
+<link rel="stylesheet" type="text/css" href="assets/css/calender.css">
 <style type="text/css">
+	html,body{
+
+	}
 	.tab-pane{
 		padding-top: 5px;
 	}
+	.waiting{
+		position: fixed;
+		width: 100%;
+		height: 100%;
+		text-align: center;
+		vertical-align: middle;
+		z-index: 10;
+		background: red;
+	}
 </style>
-	 
+	<div class="waiting" style="display:none">
+	ljkj
+	</div>
 	<div id="blue">
 	    <div class="container">
 			<div class="row">
@@ -122,7 +143,22 @@ include "header.php";
 			        				echo '<td>'.$row['firstname'].' '.$row['lastname'].'</td>';
 			        				echo '<td>'.$row['email'].'</td>';
 			        				echo '<td>'.$row['phone'].'</td>';
-			        				echo '<td><button class="btn btn-danger" title="Remove this user" onclick="removeuser('.$row['userid'].')"><span class="glyphicon glyphicon-trash"></span></button></td>';
+			        				echo '<td><button class="btn btn-danger"  title="Remove this user" onclick="removeuser('.$row['userid'].')"><span class="glyphicon glyphicon-trash"></span></button> ';
+			        				echo '<button class="btn btn-info" data-toggle="popover" title="" data-content="<table id=\'pop-table'.$row['userid'].'\'>';
+			        				$grouppresent=json_decode($row['grouplist'],true);
+			        				foreach ($allgroup as $key => $value) {
+			        					echo '<tr>';
+			        					echo '<td>'.$value['groupname'].'</td>';
+			        					echo ' <td><input id=\'groupcheck'.$row['userid'].$value['groupid'].'\'
+			        					 type=checkbox onchange=\'addusergroup('.$row['userid'].','.$value['groupid'].')\' ';
+			        					if(in_array($value['groupid'],$grouppresent))
+			        						echo 'checked';
+			        					echo '></td>';
+			        				}
+			        				echo '</table>" role="button" id="popover'.$row['userid'].'" onmouseover="$(this).popover({html:true,content : function() {
+									        return $(\'#pop-content'.$row['userid'].'\').html();
+									    }}); return false;">Add to group</button>';
+			        				echo '</td>';
 			        				echo '</tr>';
 			        			}
 			        		}
@@ -154,7 +190,11 @@ include "header.php";
 								echo '<tr>';
 								echo '<td>'.$i.'</td>';
 								echo '<td>'.$row['groupname'].'</td>';
-								echo '<td><button class="btn btn-info"><i class="fa fa-folder-open fa-lg"></i> See All users</button></td>';
+								echo '<td>
+								 <button class="btn btn-danger" onclick="deletegroup('.$row['groupid'].')" title="Delete this group">
+			                    <span class="glyphicon glyphicon-trash"></span>
+			                    </button>
+								<button class="btn btn-info" onclick="show_users(\''.$row['groupid'].'\')"><i class="fa fa-users fa-lg"></i> See All users</button></td>';
 								echo '</tr>';
 						}
 						echo '<tr><td></td><form id="add-new-group"><td><input placeholder="Type the new group name" class="form-control" name="groupname" required></td><td><button class="btn btn-success">Add this group</button></td></form></tr>';
@@ -163,11 +203,36 @@ include "header.php";
 		      	</div>
 
 		      	<div class="tab-pane fade" id="schedule">
-		        4
+			      	<div class="col-md-3">
+			      		fef
+			      	</div>
+			      	<div class="col-md-9">
+			      		<div class="page-header">
+
+							<div class="pull-right form-inline">
+								<div class="btn-group">
+									<button class="btn btn-primary" data-calendar-nav="prev"><< Prev</button>
+									<button class="btn" data-calendar-nav="today">Today</button>
+									<button class="btn btn-primary" data-calendar-nav="next">Next >></button>
+								</div>
+								<div class="btn-group">
+									<button class="btn btn-warning" data-calendar-view="year">Year</button>
+									<button class="btn btn-warning active" data-calendar-view="month">Month</button>
+									<button class="btn btn-warning" data-calendar-view="week">Week</button>
+									<button class="btn btn-warning" data-calendar-view="day">Day</button>
+								</div>
+							</div>
+
+							<h3></h3>
+							
+						</div>
+
+			        	<div id="calendar"></div>
+			        </div>
 		      	</div>
 
 		      	<div class="tab-pane fade" id="status">
-		       5
+		        	
 		      	</div>
 		      
 		    </div>	
@@ -319,26 +384,136 @@ include "header.php";
     </div>
   </div>
 </div>
-<script type="text/javascript" src="assets/js/mobizar.js"></script>
-<script type="text/javascript">
-	$("#add-new-group").submit(function(e) {
-		e.preventDefault();
-		jQuery.ajax({
-			url:'php/group/add-group.php',
-			type:'post',
-			data:$(this).serialize(),
-			success:function(data){
-				if(data=="done"){
-					location.reload();
-				}
-				else{
-					alert('some problem occured');
-					console.log(data);
-				}
-			}
-		})
-	})
+<!-- MOdal to add user -->
+<div class="modal fade" id="showgroupuser" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3 class="modal-title ctitle" id="myModalLabel" style="margin-bottom:0px">All users from group</h3>
+      </div>
+      <div class="modal-body" id="showgroupuser-body">
 
+	   </div>
+	    <div class="modal-footer">
+	        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	    </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="bulkuser" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3 class="modal-title ctitle" id="myModalLabel" style="margin-bottom:0px">Upload user in bulk</h3>
+      </div>
+      <div class="modal-body" style="overflow:auto">
+	      <form enctype="multipart/form-data" id="bulkuserupload-form">
+	      	<div class="form-group row">
+        		<label for="" class="col-md-4">Upload excel file</label>
+        		<div class="col-md-8">
+        			<input class="form-control" name="file" placeholder="" type="file" accept=".xls"  required>
+        		</div>
+        		 <div><p>Note : Please upload only microsoft excel file which is .xls. You can download the <a href="./assets/sample.xls" target=_blank> sample excel file</a> to edit </p></div>
+        	</div>
+        	<button class="btn btn-theme">Upload</button>
+	      </form>
+	      <div class="" id="bulk-add-message">
+	      </div>
+	  </div>
+	    <div class="modal-footer">
+	        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	    </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript" src="assets/js/mobizar.js"></script>
+ <script type="text/javascript" src="assets/js/underscore-min.js"></script>
+ <script type="text/javascript" src="assets/js/calender.js"></script>
+<script type="text/javascript">
+$('#bulkuserupload-form').submit(function(e){
+	e.preventDefault();
+	var formData = new FormData($('#bulkuserupload-form')[0]);
+    jQuery.ajax({
+	    url: 'php/user/bulk_user_upload.php?',  //Server script to process data
+	    type: 'POST',
+	    success: function(data){
+	    	$("#bulk-add-message").html(data);
+	        if(data=="done"){
+	           location.reload();
+	        }
+	        else{
+	           	console.log(data);
+	        }
+	    },
+	    error: function(data){
+	        alert("Network error");
+	    },
+	    data: formData,
+	    cache: false,
+	    contentType: false,
+	    processData: false
+	});
+
+})
+
+
+	var options = {
+		events_source: 'php/getevents.php',
+		view: 'month',
+		tmpl_path: 'tmpls/',
+		tmpl_cache: false,
+		onAfterEventsLoad: function(events) {
+			if(!events) {
+				return;
+			}
+			var list = $('#eventlist');
+			list.html('');
+
+			$.each(events, function(key, val) {
+				$(document.createElement('li'))
+					.html('<a href="' + val.url + '">' + val.title + '</a>')
+					.appendTo(list);
+			});
+		},
+		onAfterViewLoad: function(view) {
+			$('.page-header h3').text(this.getTitle());
+			$('.btn-group button').removeClass('active');
+			$('button[data-calendar-view="' + view + '"]').addClass('active');
+		},
+		classes: {
+			months: {
+				general: 'label'
+			}
+		}
+	};
+
+	var calendar = $('#calendar').calendar(options);
+
+	$('.btn-group button[data-calendar-nav]').each(function() {
+		var $this = $(this);
+		$this.click(function() {
+			calendar.navigate($this.data('calendar-nav'));
+		});
+	});
+
+	$('.btn-group button[data-calendar-view]').each(function() {
+		var $this = $(this);
+		$this.click(function() {
+			calendar.view($this.data('calendar-view'));
+		});
+	});
+
+	$('#first_day').change(function(){
+		var value = $(this).val();
+		value = value.length ? parseInt(value) : null;
+		calendar.setOptions({first_day: value});
+		calendar.view();
+	});
+
+ 
 </script>
   </body>
 </html>

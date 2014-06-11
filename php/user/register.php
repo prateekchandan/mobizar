@@ -36,7 +36,7 @@
 	
 	$_POST['password']= substr( str_shuffle("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789") ,mt_rand( 0 ,50 ) ,10 );
 	
-	$qstr="insert into users (`email`,`password`,`firstname`,`lastname`,`organisation`,`designation`,`phone`) values ('".$_POST['email']."' , '".encrypt_decrypt('encrypt',$_POST['password'])."' , '".$_POST['firstname']."' ,'".$_POST['lastname']."' , '".$_POST['organization']."' , '".$_POST['designation']."' , '".$_POST['phone']."')";
+	$qstr="insert into users (`email`,`password`,`firstname`,`lastname`,`organisation`,`designation`,`phone`,`createdby`) values ('".$_POST['email']."' , '".encrypt_decrypt('encrypt',$_POST['password'])."' , '".$_POST['firstname']."' ,'".$_POST['lastname']."' , '".$_POST['organization']."' , '".$_POST['designation']."' , '".$_POST['phone']."' , '".$user['userid']."')";
 	
 	mysqli_query($con,$qstr);
 

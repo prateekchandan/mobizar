@@ -19,7 +19,6 @@
 		$_POST[$key]=mysqli_real_escape_string($con,$value);
 	}$date = date('Y-m-d h:i:s', time());
     $qstr='insert into `group` (`groupname`,`createdby`,`createdon`) values ("'.$_POST['groupname'].'","'.$user['userid'].'","'.$date.'")';
-    echo $qstr;
    mysqli_query($con,$qstr);
    
     echo 'done';

@@ -153,3 +153,74 @@
             }
         })
     }
+        // Function to add a new-group
+        $("#add-new-group").submit(function(e) {
+        e.preventDefault();
+        jQuery.ajax({
+            url:'php/group/add-group.php',
+            type:'post',
+            data:$(this).serialize(),
+            success:function(data){
+                if(data=="done"){
+                    location.reload();
+                }
+                else{
+                    alert('some problem occured');
+                    console.log(data);
+                }
+            }
+        })
+    })
+    
+   
+    // Sunction to add user to a group
+    function addusergroup(user,group){
+        $('.waiting').css('display','block');
+        jQuery.ajax({
+            url:'php/user/addusertogroup.php',
+            data:{group:group,id:user},
+            type:'post',
+            success:function(data){
+                $('.waiting').css('display','none');
+                $('#popover'+user).attr('data-content',data);
+            },
+            error:function(){
+                $('.waiting').css('display','none');
+                alert('Network error');
+            }
+        })
+
+    }
+
+    // Function to show all students in group
+    function show_users(id){
+        jQuery.ajax({
+            url:'php/group/getalluser.php',
+            type:'post',
+            data:{id:id},
+            success:function(data){
+                $("#showgroupuser").modal('show');
+                $("#showgroupuser-body").html(data);
+            },
+            error:function(){
+                alert("Network error. Failed to fetch data");
+            }
+        });
+    }
+    // Function to delete a group
+    function deletegroup(id){
+        jQuery.ajax({
+            url:'php/group/deletegroup.php',
+            type:'post',
+            data:{id:id},
+            success:function(data){
+                if(data=="done")
+                    location.reload();
+                else
+                    console.log(data);
+            },
+            error:function(){
+                alert('Error in netowrk connection');
+            }
+        })
+    }
