@@ -1,5 +1,5 @@
 <?php
 
-$con = mysqli_connect('localhost','root','9431221178','shezartc_mobizar');
+$con = mysqli_connect('localhost','shezartc_prateek','prateek@1234','shezartc_mobizar');
 
 ?>
