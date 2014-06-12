@@ -8,7 +8,11 @@
 	$q=mysqli_query($con,"select * from users where email = '".$_SESSION['user-email']."'");
     $user=mysqli_fetch_assoc($q);
     if($user['usertype']!='Instructor'){
+<<<<<<< HEAD
     	die("Only admin login allowed");
+=======
+    	die("error");
+>>>>>>> 31dec0e9c894060abd04c67aae11a0579dfa82b9
     }
 
     $q=mysqli_query($con,'select * from `group` where createdby="'.$user['userid'].'"');
@@ -36,11 +40,19 @@ include "header.php";
 		text-align: center;
 		vertical-align: middle;
 		z-index: 10;
+<<<<<<< HEAD
 		background:rgba(0,0,0,0.1);
 	}
 </style>
 	<div class="waiting" style="display:none">
 	
+=======
+		background: red;
+	}
+</style>
+	<div class="waiting" style="display:none">
+	ljkj
+>>>>>>> 31dec0e9c894060abd04c67aae11a0579dfa82b9
 	</div>
 	<div id="blue">
 	    <div class="container">
