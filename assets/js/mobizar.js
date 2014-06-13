@@ -224,3 +224,41 @@
             }
         })
     }
+
+    // Function to upload bulk user
+    $('#bulkuserupload-form').submit(function(e){
+    e.preventDefault();
+    var formData = new FormData($('#bulkuserupload-form')[0]);
+    jQuery.ajax({
+        url: 'php/user/bulk_user_upload.php?',  //Server script to process data
+        type: 'POST',
+        success: function(data){
+            $("#bulk-add-message").html(data);
+            if(data=="done"){
+               location.reload();
+            }
+            else{
+                console.log(data);
+            }
+        },
+        error: function(data){
+            alert("Network error");
+        },
+        data: formData,
+        cache: false,
+        contentType: false,
+        processData: false
+    });
+
+})
+
+
+// PAgination in tables
+$(document).ready(function() {
+        $('.dataTable').dataTable( {
+                "bSort": true,       // Disable sorting
+            "iDisplayLength": 20,   //records per page
+            "sDom": "t<'row'<'col-md-6'i><'col-md-6'p>>",
+            "sPaginationType": "bootstrap"
+             } );
+        } );

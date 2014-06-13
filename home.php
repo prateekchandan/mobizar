@@ -69,7 +69,7 @@ include "header.php";
 			        		';
 			        	else
 			        		{
-			        			echo '<table class="table table-striped"><thead>
+			        			echo '<table class="table table-striped dataTable"><thead>
 			        				<th>
 			        					Serial no
 			        				</th>
@@ -116,9 +116,9 @@ include "header.php";
 			        		echo '<blockquote>No user is added in your account. Start with adding users</blockquote>';
 			        	}
 			        	else{
-			        		$q=mysqli_query($con,"select * from users");
+			        		$q=mysqli_query($con,"select * from users ");
 			        		$i=0;
-			        		echo '<table class="table table-striped"><thead>
+			        		echo '<table class="table table-striped dataTable"><thead>
 			        				<th>
 			        					Serial no
 			        				</th>
@@ -174,7 +174,7 @@ include "header.php";
 		      		<?php
 						$q=mysqli_query($con,"select * from `group` where `createdby`='".$user['userid']."'");
 						$i=0;
-						echo '<table class="table table-striped"><thead>
+						echo '<table class="table table-striped dataTable"><thead>
 								<th>
 									Serial no
 								</th>
@@ -432,32 +432,9 @@ include "header.php";
 <script type="text/javascript" src="assets/js/mobizar.js"></script>
  <script type="text/javascript" src="assets/js/underscore-min.js"></script>
  <script type="text/javascript" src="assets/js/calender.js"></script>
+ <script type="text/javascript" language="javascript" src="assets/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" language="javascript" src="assets/js/jquery-DT-pagination.js"></script>
 <script type="text/javascript">
-$('#bulkuserupload-form').submit(function(e){
-	e.preventDefault();
-	var formData = new FormData($('#bulkuserupload-form')[0]);
-    jQuery.ajax({
-	    url: 'php/user/bulk_user_upload.php?',  //Server script to process data
-	    type: 'POST',
-	    success: function(data){
-	    	$("#bulk-add-message").html(data);
-	        if(data=="done"){
-	           location.reload();
-	        }
-	        else{
-	           	console.log(data);
-	        }
-	    },
-	    error: function(data){
-	        alert("Network error");
-	    },
-	    data: formData,
-	    cache: false,
-	    contentType: false,
-	    processData: false
-	});
-
-})
 
 
 	var options = {
