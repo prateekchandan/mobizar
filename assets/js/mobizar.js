@@ -262,3 +262,68 @@ $(document).ready(function() {
             "sPaginationType": "bootstrap"
              } );
         } );
+// Function to open modal of schedule
+function schedule (id) {
+        jQuery.ajax({
+            url:'php/course/get-course-shedule.php',
+            type:'post',
+            data:{id:id},
+            success:function(data){
+                console.log(data);
+                try{
+                    data=JSON.parse(data);
+                }
+                catch(e){
+                    alert("error loading schedule for this course");
+                }
+                $("#schedule-form")[0].reset();
+                $("#schcousename").html(data['name']);
+                $("#schedule-courseid").val(data['courseid']);
+                if(data['error']==1){
+                    var a=$('input.schgroup');
+                    for (var i = 0; i < a.length; i++) {
+                        a[i].removeAttribute('checked');
+                    };
+                    $('#schedulecourse').modal('show');
+                }
+                else{
+                    $("#course-date").val(data['date']);
+                    $("#course-time").val(data['time']);
+                    var a=$('input.schgroup');
+                    var groups=JSON.parse(data['groups']);
+                    for (var i = 0; i < a.length; i++) {
+                        if(groups.indexOf(a[i].name)==-1)
+                            a[i].removeAttribute('checked');
+                        else{
+                            var att=document.createAttribute('checked');
+                            att.value="'checked'";
+                            a[i].setAttributeNode(att);
+                        }
+                    };
+                
+                    $('#schedulecourse').modal('show');
+                }
+            },
+            error:function(){
+                alert('Network error');
+            }
+        })
+    }
+// Function to schedule an event
+    $("#schedule-form").submit(function(e){
+        e.preventDefault();
+        jQuery.ajax({
+            url:'php/course/schedulecourse.php',
+            type:'post',
+            data:$(this).serialize(),
+            success:function(data){
+                if(data=="done"){
+                    $('#schedulecourse').modal('hide');
+                }
+            },
+            error:function(){
+                alert("Error in Network connection");
+            }
+        })
+    })
+

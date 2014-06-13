@@ -100,6 +100,7 @@ include "header.php";
 			        					<button class="btn btn-info" title="Edit this course" onclick="editcourse('.$row['courseid'].')"><i class="fa fa-edit fa-lg"></i>
 			        					</button>
 			        					<a class="btn btn-success" title="View / Download this file" target=_blank href="'.$row['filepath'].'"><i class="fa fa-folder-open fa-lg"></i></a>
+			        					<button class="btn btn-warning" title="Schedule this course" onclick="schedule('.$row['courseid'].')"><i class="fa fa-clock-o fa-lg"></i></button>
 			        					</td>';
 			        				echo '</tr>';
 			        			}
@@ -204,7 +205,12 @@ include "header.php";
 
 		      	<div class="tab-pane fade" id="schedule">
 			      	<div class="col-md-3">
-			      		fef
+			      		<br>
+			      		<br>
+			      		<br>
+			      		<h4>Events</h4>
+						<small>Shecdule of all courses</small>
+						<ul id="eventlist" class="nav nav-list"></ul>
 			      	</div>
 			      	<div class="col-md-9">
 			      		<div class="page-header">
@@ -329,6 +335,49 @@ include "header.php";
     </div>
   </div>
 </div>
+<!-- MODAL TO Schedule COURSE -->
+<div class="modal fade" id="schedulecourse" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3 class="modal-title ctitle" id="myModalLabel" style="margin-bottom:0px">Shedule the course</h3>
+      </div>
+      <div class="modal-body">
+        <form  id="schedule-form">
+        	<div class="form-group row">
+        		<label for="" class="col-md-12" id="schcousename">Course Name</label>
+        	</div>
+        	<div class="form-group row">
+        		<label for="" class="col-md-4">Assign date &amp; time</label>
+        		<div class="col-md-4">
+        			<input type="date" class="form-control"  id="course-date"  name="date" required>
+        		</div>
+        		<div class="col-md-4">
+        			<input type="time"  class="form-control" id="course-time" name="time" required>
+        		</div>
+        	</div>
+        	<div class="form-group row">
+        		<label for="" class="col-md-4">Assign groups</label>
+        		<ul class="col-md-8">
+        			<?php
+        				$q=mysqli_query($con,'select * from `group` where createdby="'.$user['userid'].'"');
+        				while($row=mysqli_fetch_assoc($q)){
+        					echo '<li><input type="checkbox" class="schgroup" id="schgroup'.$row['groupid'].'" name="'.$row['groupid'].'"> '.$row['groupname'].'</li>';
+        				}
+        			?>
+        		</ul>
+        	</div>
+        	<input type="hidden" name="courseid" id="schedule-courseid">
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	        <button type="submit" class="btn btn-primary">Schedule this course</button>
+	      </div>
+	    </form>
+    </div>
+  </div>
+</div>
 <!-- MODAL TO ADD USER -->
 <div class="modal fade" id="adduser" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -401,7 +450,7 @@ include "header.php";
     </div>
   </div>
 </div>
-
+<!-- Modal to add bulk user -->
 <div class="modal fade" id="bulkuser" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
