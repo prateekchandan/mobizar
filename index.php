@@ -159,6 +159,7 @@ include "header.php";
 			type:"POST",
 			data:$(this).serialize(),
 			success:function(data){
+				console.log(data);
 				$("#register-form div:nth-child(1)").removeClass('has-error');
 				$("#register-form div:nth-child(2)").removeClass('has-error');
 				$("#register-form div:nth-child(3)").removeClass('has-error');

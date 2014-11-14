@@ -24,6 +24,7 @@
     
     $date=$_POST['date'];
     $time=$_POST['time'];
+    
     $sttime=mktime( substr($time, 0,2) , substr($time, 3,2) , 0 , substr($date, 6,2) , substr($date, 8,2) , substr($date, 0,4)) * 1000;
     $endtime=$sttime + $course['courseduration'] * 60 * 1000;
 

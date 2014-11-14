@@ -6,9 +6,12 @@
 		header('location:./');
 	}
 	$q=mysqli_query($con,"select * from users where email = '".$_SESSION['user-email']."'");
+	if(mysqli_num_rows($q)==0){
+		header("location:./");
+	}
     $user=mysqli_fetch_assoc($q);
     if($user['usertype']!='Instructor'){
-    	die("Only admin login allowed");
+    	header("location:./user.php");
     }
 
     $q=mysqli_query($con,'select * from `group` where createdby="'.$user['userid'].'"');
